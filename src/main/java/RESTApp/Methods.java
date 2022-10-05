@@ -2,6 +2,8 @@ package RESTApp;
 
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.PUT;
+import org.jboss.weld.context.http.Http;
+import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -9,6 +11,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -23,9 +26,10 @@ import java.io.IOException;
 public class Methods {
 
     @WebMethod
+    @Http
     @GET
     @QueryParam("id")
-
+    @HeaderParam("s")
     public Response.Status getPerson(String id){
         try {
             File file = new File("persons.xml");
@@ -36,7 +40,7 @@ public class Methods {
 
             if(doc.getDocumentElement().hasAttribute(id)){
 
-                return Response.Status.FOUND;
+                return Response.Status.OK;
 
             }else {
                 return Response.Status.NOT_FOUND;
@@ -54,27 +58,47 @@ public class Methods {
 
 
     @WebMethod
+    @Http
     @POST
 
-    public void addPerson(){
-
+    public Response.Status addPerson(@NotNull String id){
+        if(id.isEmpty()){
+            return Response.Status.OK;
+        }
+        else{
+            return Response.Status.CONFLICT;
+        }
     }
 
     @WebMethod
+    @Http
     @PUT
-    public void updatePerson(){
 
+    public Response.Status updatePerson(@NotNull String id){
+        if(id.isEmpty()){
+            return Response.Status.OK;
+        }
+        else{
+            return Response.Status.NOT_FOUND;
+        }
     }
 
     @WebMethod
+    @Http
     @DELETE
-    public void deletePerson(){
-
+    public Response.Status deletePerson(@NotNull String id){
+        if(id.isEmpty()){
+            return Response.Status.OK;
+        }
+        else{
+            return Response.Status.NOT_FOUND;
+        }
     }
 
     @WebMethod
+    @Http
     @GET
-    public void listPersons(){
-
+    public Response.Status listPersons(){
+        return Response.Status.OK;
     }
 }
